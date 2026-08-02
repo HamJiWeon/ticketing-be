@@ -1,8 +1,9 @@
 package hello.ticketing.controller;
 
 import hello.ticketing.dto.request.PerformanceCreateRequest;
-import hello.ticketing.dto.response.PerformanceDto;
+import hello.ticketing.dto.response.PerformanceResponse;
 import hello.ticketing.service.PerformanceService;
+import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -16,7 +17,7 @@ public class PerformanceController {
     private final PerformanceService performanceService;
 
     @PostMapping
-    public ResponseEntity<PerformanceDto> create(@RequestBody PerformanceCreateRequest request) {
+    public ResponseEntity<PerformanceResponse> create(@Valid @RequestBody PerformanceCreateRequest request) {
         return ResponseEntity.status(HttpStatus.CREATED).body(performanceService.create(request));
     }
 }
