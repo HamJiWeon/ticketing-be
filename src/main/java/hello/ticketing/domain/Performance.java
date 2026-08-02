@@ -27,6 +27,7 @@ public class Performance {
 
     private LocalDate endAt;
 
+    @Enumerated(EnumType.STRING)
     private LimitStatus status;
 
     @OneToMany(mappedBy = "performance")

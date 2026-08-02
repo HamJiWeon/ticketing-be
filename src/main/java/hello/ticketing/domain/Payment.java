@@ -35,6 +35,7 @@ public class Payment {
     @Column(name = "fail_message")
     private String message;
 
+    @Enumerated(EnumType.STRING)
     private PaymentStatus status;
 
     private LocalDateTime approvedAt;
