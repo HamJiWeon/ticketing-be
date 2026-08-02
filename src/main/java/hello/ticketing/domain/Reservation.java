@@ -5,6 +5,7 @@ import lombok.AccessLevel;
 import lombok.Builder;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
+import org.springframework.data.domain.Persistable;
 
 import java.time.LocalDateTime;
 import java.util.UUID;
@@ -12,7 +13,7 @@ import java.util.UUID;
 @Entity
 @Getter
 @NoArgsConstructor(access = AccessLevel.PROTECTED)
-public class Reservation {
+public class Reservation implements Persistable<UUID> {
 
     @Id
     private UUID id;
@@ -51,6 +52,7 @@ public class Reservation {
         this.reservedAt = LocalDateTime.now();
         this.expiresAt = expiresAt;
         this.status = status;
+        this.updatedAt = this.reservedAt;
     }
 
     public static Reservation from(User user, Round round, int quantity,
@@ -68,5 +70,19 @@ public class Reservation {
     public void changeStatus(ReservationStatus status) {
         this.status = status;
         this.updatedAt = LocalDateTime.now();
+    }
+
+    @Transient
+    private boolean isNew = true;
+
+    @Override
+    public boolean isNew() {
+        return isNew;
+    }
+
+    @PostPersist
+    @PostLoad
+    void markNotNew() {
+        this.isNew = false;
     }
 }
