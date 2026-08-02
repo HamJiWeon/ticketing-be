@@ -1,9 +1,11 @@
 package hello.ticketing.service;
 
+import hello.ticketing.domain.Remain;
 import hello.ticketing.domain.Reservation;
 import hello.ticketing.domain.Round;
 import hello.ticketing.domain.User;
 import hello.ticketing.dto.response.ReservationResponse;
+import hello.ticketing.repository.RemainRepository;
 import hello.ticketing.repository.ReservationRepository;
 import hello.ticketing.repository.RoundRepository;
 import hello.ticketing.repository.UserRepository;
@@ -26,9 +28,15 @@ public class ReservationServiceImpl implements ReservationService {
     private final ReservationRepository reservationRepository;
     private final UserRepository userRepository;
     private final RoundRepository roundRepository;
+    private final RemainRepository remainRepository;
 
     @Override
     public ReservationResponse create(Long userId, Long roundId, int quantity) {
+
+        Remain remain = remainRepository.findByRoundIdForUpdate(roundId)
+                .orElseThrow(() -> new IllegalArgumentException("재고 정보가 없습니다. roundId: " + roundId));
+
+        remain.decrease(quantity);
 
         User user = findByUserId(userId);
         Round round = findByRoundId(roundId);
