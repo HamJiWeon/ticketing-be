@@ -13,6 +13,6 @@ public record CreateReservationRequest(
 
         @NotNull(message = "수량은 필수 입니다.")
         @Min(value = 1, message = "수량은 1 이상이어야 합니다.")
-        int quantity
+        Integer quantity
 ) {
 }
