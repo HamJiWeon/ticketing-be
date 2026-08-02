@@ -1,0 +1,46 @@
+# 리뷰 댓글을 한국어로 작성
+language: "ko-KR"
+
+reviews:
+  # 리뷰 강도: quiet(중요한 것만) / chill(균형) / assertive(꼼꼼하게, 사소한 것도 지적)
+  profile: "assertive"
+
+  # 리뷰에서 제외할 경로 (빌드 산출물, IDE 설정 등 리뷰할 필요 없는 파일)
+  path_filters:
+    - "!build/**"
+    - "!.gradle/**"
+    - "!gradle/**"
+    - "!.idea/**"
+    - "!**/*.class"
+    - "!README.md"
+
+  # 특정 경로에 추가 리뷰 관점 지정
+  path_instructions:
+    - path: "**/domain/**/*.java"
+      instructions: >
+        재고/좌석 수량을 변경하는 로직은 동시성 이슈(경쟁 조건, 락 범위,
+        트랜잭션 범위)를 특히 주의 깊게 검토해주세요.
+    - path: "**/service/**/*.java"
+      instructions: >
+        @Transactional 경계 안에 PG 호출 같은 외부 API 호출이 섞여 있지
+        않은지, 트랜잭션 범위가 필요 이상으로 넓지 않은지 확인해주세요.
+    - path: "**/controller/**/*.java"
+      instructions: >
+        요청 값에 @Valid 검증이 빠지지 않았는지, 예외를 그대로 클라이언트에
+        노출하지 않고 적절한 상태 코드/에러 응답으로 변환하는지, 비즈니스
+        로직이 서비스 계층으로 위임되지 않고 컨트롤러에 그대로 남아있지
+        않은지 확인해주세요.
+    - path: "**/repository/**/*.java"
+      instructions: >
+        좌석/재고 차감처럼 동시 접근이 몰리는 쿼리에 락(@Lock, FOR UPDATE)
+        없이 조회 후 갱신하는 패턴이 있는지, 연관 엔티티 조회에서 N+1이
+        발생할 여지가 있는지, 대량 조회에 페이징이 빠져있지 않은지
+        확인해주세요.
+
+  auto_review:
+    # 초안(Draft) PR은 리뷰하지 않음
+    drafts: false
+    # 제목에 이 키워드가 있으면 리뷰를 건너뜀
+    ignore_title_keywords:
+      - "WIP"
+      - "DO NOT REVIEW"
