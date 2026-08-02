@@ -18,6 +18,7 @@ public class Round {
     private Long id;
 
     @ManyToOne(fetch = FetchType.LAZY)
+    @JoinColumn(name = "performance_id")
     private Performance performance;
 
     private LocalDate startAt;

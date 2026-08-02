@@ -27,7 +27,11 @@ public class Performance {
 
     private LocalDate endAt;
 
-    private LimitStatus status;
+    @Enumerated(EnumType.STRING)
+    private GenreStatus genre;
+
+    @Enumerated(EnumType.STRING)
+    private LimitStatus ticketLimit;
 
     @OneToMany(mappedBy = "performance")
     private List<Round> round;
