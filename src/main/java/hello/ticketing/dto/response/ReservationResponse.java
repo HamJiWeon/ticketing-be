@@ -14,7 +14,7 @@ public record ReservationResponse(
         int quantity,
         LocalDateTime reservedAt,
         LocalDateTime expiresAt,
-        LocalDateTime createdAt
+        LocalDateTime updatedAt
 ) {
     public static ReservationResponse from(Reservation reservation) {
         return new ReservationResponse(
@@ -25,7 +25,7 @@ public record ReservationResponse(
                 reservation.getQuantity(),
                 reservation.getReservedAt(),
                 reservation.getExpiresAt(),
-                reservation.getCreatedAt()
+                reservation.getUpdatedAt()
         );
     }
 }
