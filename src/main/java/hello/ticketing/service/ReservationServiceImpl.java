@@ -64,7 +64,8 @@ public class ReservationServiceImpl implements ReservationService {
         PageRequest sorted = PageRequest.of(
                 pageable.getPageNumber(),
                 pageable.getPageSize(),
-                Sort.by(Sort.Direction.DESC, "reservedAt")
+                Sort.by(Sort.Order.desc("reservedAt"),
+                        Sort.Order.asc("id"))
         );
 
         return reservationRepository.findByUser_Id(userId, sorted)
