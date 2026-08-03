@@ -17,26 +17,40 @@ import java.util.List;
 @Entity
 @EntityListeners(AuditingEntityListener.class)
 @NoArgsConstructor(access = AccessLevel.PROTECTED)
+@Table(uniqueConstraints = {
+        @UniqueConstraint(
+                name = "uk_performance_name_place_genre",
+                columnNames = {"name", "place", "genre"}
+        )
+    }
+)
 public class Performance {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
+    @Column(nullable = false)
     private String name;
 
+    @Column(nullable = false)
     private String place;
 
+    @Column(nullable = false)
     private int price;
 
+    @Column(nullable = false)
     private LocalDate startAt;
 
+    @Column(nullable = false)
     private LocalDate endAt;
 
     @Enumerated(EnumType.STRING)
+    @Column(nullable = false)
     private GenreStatus genre;
 
     @Enumerated(EnumType.STRING)
+    @Column(nullable = false)
     private LimitStatus ticketLimit;
 
     @OneToMany(mappedBy = "performance")
