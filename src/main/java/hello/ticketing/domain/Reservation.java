@@ -67,8 +67,11 @@ public class Reservation implements Persistable<UUID> {
                 .build();
     }
 
-    public void changeStatus(ReservationStatus status) {
-        this.status = status;
+    public void cancelReservation() {
+        if (this.status == ReservationStatus.CANCELED) {
+            throw new IllegalStateException("이미 취소된 예약입니다.");
+        }
+        this.status = ReservationStatus.CANCELED;
         this.updatedAt = LocalDateTime.now();
     }
 
