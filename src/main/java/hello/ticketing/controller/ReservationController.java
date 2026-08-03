@@ -1,6 +1,6 @@
 package hello.ticketing.controller;
 
-import hello.ticketing.dto.request.CreateReservationRequest;
+import hello.ticketing.dto.request.ReservationCreateRequest;
 import hello.ticketing.dto.response.ReservationResponse;
 import hello.ticketing.service.ReservationService;
 import jakarta.validation.Valid;
@@ -20,7 +20,7 @@ public class ReservationController {
 
     @PostMapping
     public ResponseEntity<ReservationResponse> createReservation(
-            @Valid @RequestBody CreateReservationRequest request
+            @Valid @RequestBody ReservationCreateRequest request
     ) {
         ReservationResponse response = reservationService.create(
                 request.userId(),
