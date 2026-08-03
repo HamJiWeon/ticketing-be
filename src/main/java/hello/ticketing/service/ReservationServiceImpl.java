@@ -75,7 +75,7 @@ public class ReservationServiceImpl implements ReservationService {
 
     @Override
     public ReservationResponse cancel(UUID reservationId) {
-        Reservation reservation = reservationRepository.findById(reservationId)
+        Reservation reservation = reservationRepository.findByIdForUpdate(reservationId)
                 .orElseThrow(() -> new IllegalArgumentException("예약 정보가 없습니다. ID: " + reservationId));
 
         reservation.cancelReservation();
