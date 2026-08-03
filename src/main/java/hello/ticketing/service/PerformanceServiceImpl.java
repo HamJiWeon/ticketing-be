@@ -20,7 +20,10 @@ public class PerformanceServiceImpl implements PerformanceService {
     @Override
     public PerformanceResponse create(PerformanceCreateRequest request) {
         if(performanceRepository.existsByNameAndPlaceAndGenre(request.name(), request.place(), request.genre())) {
-            throw new IllegalArgumentException("이미 존재하는 공연입니다.");
+            throw new IllegalStateException("이미 존재하는 공연입니다.");
+        }
+        if(request.endAt().isBefore(request.startAt())) {
+            throw new IllegalArgumentException("공연 종료일은 시작일보다 빠를 수 없습니다.");
         }
 
         Performance performance = Performance.builder()
