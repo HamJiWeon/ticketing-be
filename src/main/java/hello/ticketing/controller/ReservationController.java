@@ -5,6 +5,9 @@ import hello.ticketing.dto.response.ReservationResponse;
 import hello.ticketing.service.ReservationService;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
+import org.springframework.data.web.PageableDefault;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.servlet.support.ServletUriComponentsBuilder;
@@ -34,5 +37,13 @@ public class ReservationController {
                 .toUri();
 
         return ResponseEntity.created(location).body(response);
+    }
+
+    @GetMapping
+    public ResponseEntity<Page<ReservationResponse>> getReservations(
+            @RequestParam Long userId,
+            @PageableDefault() Pageable pageable
+    ) {
+        return ResponseEntity.ok(reservationService.gets(userId, pageable));
     }
 }
