@@ -11,10 +11,15 @@ import hello.ticketing.repository.RoundRepository;
 import hello.ticketing.repository.UserRepository;
 import lombok.RequiredArgsConstructor;
 import org.jspecify.annotations.NonNull;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.Pageable;
+import org.springframework.data.domain.Sort;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import java.time.LocalDateTime;
+import java.util.UUID;
 
 import static hello.ticketing.domain.ReservationStatus.*;
 
@@ -53,6 +58,34 @@ public class ReservationServiceImpl implements ReservationService {
         Reservation savedReservation = reservationRepository.save(reservation);
 
         return ReservationResponse.from(savedReservation);
+    }
+
+    @Override
+    public Page<ReservationResponse> gets(Long userId, Pageable pageable) {
+        PageRequest sorted = PageRequest.of(
+                pageable.getPageNumber(),
+                pageable.getPageSize(),
+                Sort.by(Sort.Order.desc("reservedAt"),
+                        Sort.Order.asc("id"))
+        );
+
+        return reservationRepository.findByUser_Id(userId, sorted)
+                .map(ReservationResponse::from);
+    }
+
+    @Override
+    public ReservationResponse cancel(UUID reservationId) {
+        Reservation reservation = reservationRepository.findById(reservationId)
+                .orElseThrow(() -> new IllegalArgumentException("예약 정보가 없습니다. ID: " + reservationId));
+
+        reservation.cancelReservation();
+
+        Remain remain = remainRepository.findByRoundIdForUpdate(reservation.getRound().getId())
+                .orElseThrow(() -> new IllegalArgumentException("재고 정보가 없습니다. ID: " + reservation.getRound().getId()));
+
+        remain.increase(reservation.getQuantity());
+
+        return ReservationResponse.from(reservation);
     }
 
     private @NonNull Round findByRoundId(Long roundId) {
