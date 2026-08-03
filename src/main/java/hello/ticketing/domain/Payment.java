@@ -5,6 +5,7 @@ import lombok.AccessLevel;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 
+import java.time.LocalDateTime;
 import java.util.UUID;
 
 @Entity
@@ -17,6 +18,7 @@ public class Payment {
     private Long id;
 
     @OneToOne(fetch = FetchType.LAZY)
+    @JoinColumn(name = "reservation_id")
     private Reservation reservation;
 
     private UUID orderId;
@@ -33,7 +35,10 @@ public class Payment {
     @Column(name = "fail_message")
     private String message;
 
+    @Enumerated(EnumType.STRING)
     private PaymentStatus status;
+
+    private LocalDateTime approvedAt;
 
     @Version
     private Long version;

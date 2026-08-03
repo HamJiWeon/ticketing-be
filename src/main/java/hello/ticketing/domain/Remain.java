@@ -21,4 +21,12 @@ public class Remain {
     private int totalSeat;
 
     private int remainSeat;
+
+    public void decrease(int quantity) {
+        if (this.remainSeat < quantity) {
+            throw new IllegalStateException("좌석이 부족합니다. 남은 좌석: " + this.remainSeat);
+        }
+
+        this.remainSeat -= quantity;
+    }
 }

@@ -1,8 +1,8 @@
 package hello.ticketing.domain;
 
 public enum PaymentStatus {
-    PENDING,
-    CONFIRM,
-    CANCELED,
-    EXPIRED
+    READY,
+    DONE,
+    FAILED,
+    CANCELED
 }
