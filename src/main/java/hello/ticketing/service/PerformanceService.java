@@ -6,4 +6,6 @@ import hello.ticketing.dto.response.PerformanceResponse;
 public interface PerformanceService {
 
     PerformanceResponse create(PerformanceCreateRequest request);
+
+    PerformanceResponse findById(Long perfId);
 }
