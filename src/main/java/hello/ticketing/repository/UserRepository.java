@@ -3,5 +3,10 @@ package hello.ticketing.repository;
 import hello.ticketing.domain.User;
 import org.springframework.data.jpa.repository.JpaRepository;
 
-public interface UserRepository extends JpaRepository<Long, User> {
+import java.util.Optional;
+
+public interface UserRepository extends JpaRepository<User, Long> {
+    Optional<User> findByEmail(String email);
+
+    boolean existsByEmail(String email);
 }
