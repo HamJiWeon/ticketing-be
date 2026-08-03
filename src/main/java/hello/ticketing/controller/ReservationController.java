@@ -48,9 +48,9 @@ public class ReservationController {
         return ResponseEntity.ok(reservationService.gets(userId, pageable));
     }
 
+
     @PatchMapping("/{id}")
     public ResponseEntity<ReservationResponse> cancelReservation(@PathVariable UUID id) {
         return ResponseEntity.ok(reservationService.cancel(id));
     }
-
 }

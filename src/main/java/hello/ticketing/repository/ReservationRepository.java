@@ -12,6 +12,7 @@ import java.util.Optional;
 import java.util.UUID;
 
 public interface ReservationRepository extends JpaRepository<Reservation, UUID> {
+
     Page<Reservation> findByUser_Id(Long userId, Pageable pageable);
 
     @Lock(LockModeType.PESSIMISTIC_WRITE)
