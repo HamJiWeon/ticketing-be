@@ -18,8 +18,6 @@ public class UserDetailService implements UserDetailsService {
     //Spring Security가 로그인할 때 사용할 사용자 정보를 DB에서 찾아오는 클래스
     @Override
     public UserDetails loadUserByUsername(String username) throws UsernameNotFoundException {
-        log.info("loadUserByUsername username={}", username);
-
         User user = userRepository.findByEmail(username)
                 .orElseThrow(() -> new UsernameNotFoundException(username));
 

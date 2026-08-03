@@ -1,17 +1,16 @@
 package hello.ticketing.service;
 
-import hello.ticketing.domain.User;
 import hello.ticketing.dto.request.UserCreateRequest;
 import hello.ticketing.dto.request.UserUpdateRequest;
 import hello.ticketing.dto.response.UserResponse;
-
-import java.util.List;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
 
 public interface UserService {
 
     UserResponse create(UserCreateRequest request);
 
-    List<UserResponse> findAll();
+    Page<UserResponse> findAll(Pageable pageable);
 
     UserResponse findById(Long id);
 

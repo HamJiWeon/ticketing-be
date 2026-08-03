@@ -4,8 +4,10 @@ import hello.ticketing.dto.request.UserCreateRequest;
 import hello.ticketing.dto.request.UserUpdateRequest;
 import hello.ticketing.dto.response.UserResponse;
 import hello.ticketing.service.UserService;
+import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
+import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
 @RestController
@@ -16,22 +18,28 @@ public class UserController {
     private final UserService userService;
 
     @PostMapping
-    @ResponseStatus(HttpStatus.CREATED)
-    public UserResponse create(@RequestBody UserCreateRequest request) {
-        return userService.create(request);
+    public ResponseEntity<UserResponse> create(@Valid @RequestBody UserCreateRequest request) {
+        UserResponse response = userService.create(request);
+
+        return ResponseEntity
+                .status(HttpStatus.CREATED)
+                .body(response);
     }
 
     @PatchMapping("/{userId}")
-    public UserResponse update(
+    public ResponseEntity<UserResponse> update(
             @PathVariable Long userId,
-            @RequestBody UserUpdateRequest request
+            @Valid @RequestBody UserUpdateRequest request
     ) {
-        return userService.update(userId, request);
+        UserResponse response = userService.update(userId, request);
+
+        return ResponseEntity.ok(response);
     }
 
-    @DeleteMapping("/{userId}/delete")
-    @ResponseStatus(HttpStatus.NO_CONTENT)
-    public void delete(@PathVariable Long userId) {
+    @DeleteMapping("/{userId}")
+    public ResponseEntity<Void> delete(@PathVariable Long userId) {
         userService.delete(userId);
+
+        return ResponseEntity.noContent().build();
     }
 }

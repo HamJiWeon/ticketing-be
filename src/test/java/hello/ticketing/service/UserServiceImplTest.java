@@ -3,6 +3,8 @@ package hello.ticketing.service;
 import hello.ticketing.domain.User;
 import hello.ticketing.dto.request.UserCreateRequest;
 import hello.ticketing.dto.request.UserUpdateRequest;
+import hello.ticketing.global.exception.DuplicateEmailException;
+import hello.ticketing.global.exception.UserNotFoundException;
 import hello.ticketing.repository.UserRepository;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
@@ -47,6 +49,7 @@ class UserServiceImplTest {
 
         assertThat(response.name()).isEqualTo("홍길동");
         assertThat(response.email()).isEqualTo("test@test.com");
+        assertThat(response.phone()).isEqualTo("01012345678");
         assertThat(response.age()).isEqualTo(20);
         assertThat(response.address()).isEqualTo("서울");
 
@@ -68,8 +71,8 @@ class UserServiceImplTest {
         when(userRepository.existsByEmail(request.email())).thenReturn(true);
 
         assertThatThrownBy(() -> userService.create(request))
-                .isInstanceOf(IllegalArgumentException.class)
-                .hasMessage("이미 존재하는 이메일입니다.");
+                .isInstanceOf(DuplicateEmailException.class)
+                .hasMessage("이미 존재하는 이메일입니다. email=test@test.com");
 
         verify(userRepository, never()).save(any(User.class));
         verify(passwordEncoder, never()).encode(anyString());
@@ -101,6 +104,7 @@ class UserServiceImplTest {
 
         var response = userService.update(userId, request);
 
+        assertThat(response.phone()).isEqualTo("01099998888");
         assertThat(response.address()).isEqualTo("부산");
         assertThat(user.getPhone()).isEqualTo("01099998888");
         assertThat(user.getPassword()).isEqualTo("encoded-new-password");
@@ -121,7 +125,7 @@ class UserServiceImplTest {
         when(userRepository.findById(userId)).thenReturn(Optional.empty());
 
         assertThatThrownBy(() -> userService.update(userId, request))
-                .isInstanceOf(IllegalArgumentException.class);
+                .isInstanceOf(UserNotFoundException.class);
     }
 
     @Test

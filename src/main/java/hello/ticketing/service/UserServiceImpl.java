@@ -4,13 +4,15 @@ import hello.ticketing.domain.User;
 import hello.ticketing.dto.request.UserCreateRequest;
 import hello.ticketing.dto.request.UserUpdateRequest;
 import hello.ticketing.dto.response.UserResponse;
+import hello.ticketing.global.exception.DuplicateEmailException;
+import hello.ticketing.global.exception.UserNotFoundException;
 import hello.ticketing.repository.UserRepository;
 import lombok.RequiredArgsConstructor;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
-
-import java.util.List;
 
 @Service
 @RequiredArgsConstructor
@@ -23,7 +25,7 @@ public class UserServiceImpl implements UserService {
     @Override
     public UserResponse create(UserCreateRequest request) {
         if (userRepository.existsByEmail(request.email())) {
-            throw new IllegalArgumentException("이미 존재하는 이메일입니다.");
+            throw new DuplicateEmailException(request.email());
         }
 
         User user = User.builder()
@@ -43,26 +45,24 @@ public class UserServiceImpl implements UserService {
     }
     @Override
     @Transactional(readOnly = true)
-    public List<UserResponse> findAll() {
-        return userRepository.findAll()
-                .stream()
-                .map(UserResponse::from)
-                .toList();
+    public Page<UserResponse> findAll(Pageable pageable) {
+        return userRepository.findAll(pageable)
+                .map(UserResponse::from);
     }
 
     @Override
     @Transactional(readOnly = true)
     public UserResponse findById(Long id) {
         User user = userRepository.findById(id)
-                .orElseThrow(() -> new IllegalArgumentException("사용자를 찾을 수 없습니다. id=" + id));
+                .orElseThrow(() -> new UserNotFoundException(id));
 
         return UserResponse.from(user);
     }
 
     @Override
-    public UserResponse update(Long id, UserUpdateRequest request) {
+    public  UserResponse update(Long id, UserUpdateRequest request) {
         User user = userRepository.findById(id)
-                .orElseThrow(() -> new IllegalArgumentException("사용자를 찾을 수 없습니다. id=" + id));
+                .orElseThrow(() -> new UserNotFoundException(id));
 
         user.update(
                 passwordEncoder.encode(request.password()),
@@ -76,7 +76,7 @@ public class UserServiceImpl implements UserService {
     @Override
     public void delete(Long id) {
         User user = userRepository.findById(id)
-                .orElseThrow(() -> new IllegalArgumentException("사용자를 찾을 수 없습니다. id=" + id));
+                .orElseThrow(() -> new UserNotFoundException(id));
 
         userRepository.delete(user);
     }

@@ -32,6 +32,6 @@ public class MyUserDetails implements UserDetails {
 
     @Override
     public String getUsername() {
-        return user.getProvider() + ":" + user.getProviderId();
+        return user.getEmail();
     }
 }
