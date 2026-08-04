@@ -6,8 +6,10 @@ import hello.ticketing.dto.response.PerformanceResponse;
 import hello.ticketing.mapper.PerformanceMapper;
 import hello.ticketing.repository.PerformanceRepository;
 import lombok.RequiredArgsConstructor;
+import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
+import org.springframework.web.server.ResponseStatusException;
 
 @Service
 @Transactional
@@ -38,5 +40,14 @@ public class PerformanceServiceImpl implements PerformanceService {
 
         Performance save = performanceRepository.save(performance);
         return performanceMapper.toDto(save);
+    }
+
+    @Override
+    public PerformanceResponse findById(Long perfId) {
+        Performance performance = performanceRepository.findById(perfId)
+                // 나중에 커스텀 예외로 변경 예정
+                .orElseThrow(() -> new ResponseStatusException(HttpStatus.NOT_FOUND, "존재하지 않는 공연입니다."));
+
+        return performanceMapper.toDto(performance);
     }
 }
