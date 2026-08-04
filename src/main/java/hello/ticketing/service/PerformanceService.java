@@ -8,4 +8,6 @@ public interface PerformanceService {
     PerformanceResponse create(PerformanceCreateRequest request);
 
     PerformanceResponse findById(Long perfId);
+
+    void delete(Long perfId);
 }
