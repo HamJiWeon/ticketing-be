@@ -53,6 +53,10 @@ public class Performance {
     @Column(nullable = false)
     private LimitStatus ticketLimit;
 
+    @Enumerated(EnumType.STRING)
+    @Column(nullable = false)
+    private PerformanceStatus perfStatus;
+
     @OneToMany(mappedBy = "performance")
     private List<Round> round;
 
