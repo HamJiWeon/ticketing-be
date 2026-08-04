@@ -25,4 +25,10 @@ public class PerformanceController {
     public ResponseEntity<PerformanceResponse> findById(@PathVariable Long perfId) {
         return ResponseEntity.ok(performanceService.findById(perfId));
     }
+
+    @DeleteMapping("/{perfId}/delete")
+    public ResponseEntity<Void> delete(@PathVariable Long perfId) {
+        performanceService.delete(perfId);
+        return ResponseEntity.noContent().build();
+    }
 }
