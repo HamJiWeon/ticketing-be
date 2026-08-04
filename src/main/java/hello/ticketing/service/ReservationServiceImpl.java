@@ -19,6 +19,7 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import java.time.LocalDateTime;
+import java.util.UUID;
 
 import static hello.ticketing.domain.ReservationStatus.*;
 
@@ -70,6 +71,21 @@ public class ReservationServiceImpl implements ReservationService {
 
         return reservationRepository.findByUser_Id(userId, sorted)
                 .map(ReservationResponse::from);
+    }
+
+    @Override
+    public ReservationResponse cancel(UUID reservationId) {
+        Reservation reservation = reservationRepository.findByIdForUpdate(reservationId)
+                .orElseThrow(() -> new IllegalArgumentException("예약 정보가 없습니다. ID: " + reservationId));
+
+        reservation.cancelReservation();
+
+        Remain remain = remainRepository.findByRoundIdForUpdate(reservation.getRound().getId())
+                .orElseThrow(() -> new IllegalArgumentException("재고 정보가 없습니다. ID: " + reservation.getRound().getId()));
+
+        remain.increase(reservation.getQuantity());
+
+        return ReservationResponse.from(reservation);
     }
 
     private @NonNull Round findByRoundId(Long roundId) {

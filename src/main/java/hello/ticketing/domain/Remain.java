@@ -29,4 +29,8 @@ public class Remain {
 
         this.remainSeat -= quantity;
     }
+
+    public void increase(int quantity) {
+        this.remainSeat += quantity;
+    }
 }
