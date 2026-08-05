@@ -80,6 +80,14 @@ public class Reservation implements Persistable<UUID> {
         this.updatedAt = LocalDateTime.now();
     }
 
+    public void confirmReservation() {
+        if (this.status != ReservationStatus.PENDING) {
+            throw new IllegalStateException("결제 가능한 상태가 아닙니다.");
+        }
+        this.status = ReservationStatus.CONFIRM;
+        this.updatedAt = LocalDateTime.now();
+    }
+
     @Transient
     private boolean isNew = true;
 

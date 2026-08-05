@@ -63,8 +63,7 @@ public class Performance {
     private LocalDateTime updatedAt;
 
     @Builder
-    public Performance(Long id, String name, String place, int price, LocalDate startAt, LocalDate endAt, GenreStatus genre, LimitStatus ticketLimit, List<Round> round, LocalDateTime createdAt, LocalDateTime updatedAt) {
-        this.id = id;
+    public Performance(String name, String place, int price, LocalDate startAt, LocalDate endAt, GenreStatus genre, LimitStatus ticketLimit, List<Round> round, LocalDateTime createdAt, LocalDateTime updatedAt) {
         this.name = name;
         this.place = place;
         this.price = price;
