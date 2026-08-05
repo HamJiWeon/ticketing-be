@@ -12,7 +12,7 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.server.ResponseStatusException;
 
-import java.util.List;
+import java.time.LocalDateTime;
 
 @Service
 @Transactional
@@ -62,11 +62,7 @@ public class PerformanceServiceImpl implements PerformanceService {
                 // 나중에 커스텀 예외로 변경 예정
                 .orElseThrow(() -> new ResponseStatusException(HttpStatus.NOT_FOUND, "존재하지 않는 공연입니다."));
 
-        List<Reservation> reservations = reservationRepository.findByRound_Performance_IdAndStatusNot(performance.getId(), ReservationStatus.CANCELED);
-        for (Reservation reservation : reservations) {
-            reservation.changeStatus(ReservationStatus.CANCELED);
-        }
-
+        reservationRepository.cancelAllByPerformanceId(performance.getId(), ReservationStatus.CANCELED, LocalDateTime.now());
         performance.changeStatus(PerformanceStatus.CLOSED);
     }
 }
