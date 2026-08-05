@@ -13,6 +13,7 @@ import org.springframework.web.bind.annotation.*;
 import org.springframework.web.servlet.support.ServletUriComponentsBuilder;
 
 import java.net.URI;
+import java.util.UUID;
 
 @RestController
 @RequiredArgsConstructor
@@ -45,5 +46,11 @@ public class ReservationController {
             @PageableDefault() Pageable pageable
     ) {
         return ResponseEntity.ok(reservationService.gets(userId, pageable));
+    }
+
+
+    @PatchMapping("/{id}")
+    public ResponseEntity<ReservationResponse> cancelReservation(@PathVariable UUID id) {
+        return ResponseEntity.ok(reservationService.cancel(id));
     }
 }
