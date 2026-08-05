@@ -62,12 +62,9 @@ public class PerformanceServiceImpl implements PerformanceService {
                 // 나중에 커스텀 예외로 변경 예정
                 .orElseThrow(() -> new ResponseStatusException(HttpStatus.NOT_FOUND, "존재하지 않는 공연입니다."));
 
-        List<Reservation> reservations = reservationRepository.findAll();
+        List<Reservation> reservations = reservationRepository.findByRound_Performance_IdAndStatusNot(performance.getId(), ReservationStatus.CANCELED);
         for (Reservation reservation : reservations) {
-            String name = reservation.getRound().getPerformance().getName();
-            if(name.equals(performance.getName()) && reservation.getStatus()!=ReservationStatus.CANCELED) {
-                reservation.changeStatus(ReservationStatus.CANCELED);
-            }
+            reservation.changeStatus(ReservationStatus.CANCELED);
         }
 
         performance.changeStatus(PerformanceStatus.CLOSED);
