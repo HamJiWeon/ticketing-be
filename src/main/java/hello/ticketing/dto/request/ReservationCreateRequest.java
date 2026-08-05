@@ -3,7 +3,7 @@ package hello.ticketing.dto.request;
 import jakarta.validation.constraints.Min;
 import jakarta.validation.constraints.NotNull;
 
-public record CreateReservationRequest(
+public record ReservationCreateRequest(
 
         @NotNull(message = "유저 값은 필수 입니다.")
         Long userId,

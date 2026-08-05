@@ -44,6 +44,8 @@ reviews:
     ignore_title_keywords:
       - "WIP"
       - "DO NOT REVIEW"
+    # 기본적으로 default 브랜치(main)로 들어가는 PR만 자동 리뷰하므로,
+    # dev로 들어가는 PR도 리뷰 대상에 포함시킴
     base_branches:
       - "dev"
       - "main"

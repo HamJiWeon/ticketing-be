@@ -19,22 +19,27 @@ public class Reservation implements Persistable<UUID> {
     private UUID id;
 
     @ManyToOne(fetch = FetchType.LAZY)
-    @JoinColumn(name = "user_id")
+    @JoinColumn(name = "user_id", nullable = false)
     private User user;
 
     @ManyToOne(fetch = FetchType.LAZY)
-    @JoinColumn(name = "round_id")
+    @JoinColumn(name = "round_id", nullable = false)
     private Round round;
 
+    @Column(nullable = false)
     private int quantity;
 
+    @Column(nullable = false)
     private LocalDateTime reservedAt;
 
+    @Column(nullable = false)
     private LocalDateTime expiresAt;
 
     @Enumerated(EnumType.STRING)
+    @Column(nullable = false)
     private ReservationStatus status;
 
+    @Column(nullable = false)
     private LocalDateTime updatedAt;
 
     @Builder
@@ -67,8 +72,11 @@ public class Reservation implements Persistable<UUID> {
                 .build();
     }
 
-    public void changeStatus(ReservationStatus status) {
-        this.status = status;
+    public void cancelReservation() {
+        if (this.status == ReservationStatus.CANCELED) {
+            throw new IllegalStateException("이미 취소된 예약입니다.");
+        }
+        this.status = ReservationStatus.CANCELED;
         this.updatedAt = LocalDateTime.now();
     }
 
