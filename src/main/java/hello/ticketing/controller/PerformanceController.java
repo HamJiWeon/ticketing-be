@@ -20,4 +20,9 @@ public class PerformanceController {
     public ResponseEntity<PerformanceResponse> create(@Valid @RequestBody PerformanceCreateRequest request) {
         return ResponseEntity.status(HttpStatus.CREATED).body(performanceService.create(request));
     }
+
+    @GetMapping("/{perfId}")
+    public ResponseEntity<PerformanceResponse> findById(@PathVariable Long perfId) {
+        return ResponseEntity.ok(performanceService.findById(perfId));
+    }
 }
