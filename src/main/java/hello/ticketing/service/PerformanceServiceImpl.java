@@ -63,6 +63,8 @@ public class PerformanceServiceImpl implements PerformanceService {
                 .orElseThrow(() -> new ResponseStatusException(HttpStatus.NOT_FOUND, "존재하지 않는 공연입니다."));
 
         reservationRepository.cancelAllByPerformanceId(performance.getId(), ReservationStatus.CANCELED, LocalDateTime.now());
-        performance.changeStatus(PerformanceStatus.CLOSED);
+        Performance perf = performanceRepository.findById(perfId)
+                .orElseThrow(() -> new ResponseStatusException(HttpStatus.NOT_FOUND, "존재하지 않는 공연입니다."));
+        perf.changeStatus(PerformanceStatus.CLOSED);
     }
 }
