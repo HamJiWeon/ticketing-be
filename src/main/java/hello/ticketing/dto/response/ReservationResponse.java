@@ -1,6 +1,5 @@
 package hello.ticketing.dto.response;
 
-import hello.ticketing.domain.Reservation;
 import hello.ticketing.domain.ReservationStatus;
 
 import java.time.LocalDateTime;
@@ -17,7 +16,7 @@ public record ReservationResponse(
         LocalDateTime expiresAt,
         LocalDateTime updatedAt
 ) {
-    public static ReservationResponse from(Reservation reservation) {
+    /*public static ReservationResponse from(Reservation reservation) {
         return new ReservationResponse(
                 reservation.getId(),
                 reservation.getUser().getId(),
@@ -29,5 +28,5 @@ public record ReservationResponse(
                 reservation.getExpiresAt(),
                 reservation.getUpdatedAt()
         );
-    }
+    }*/
 }
