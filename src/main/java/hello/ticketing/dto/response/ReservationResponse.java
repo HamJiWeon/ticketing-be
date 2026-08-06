@@ -9,6 +9,7 @@ import java.util.UUID;
 public record ReservationResponse(
         UUID id,
         Long userId,
+        String performanceName,
         Long roundId,
         ReservationStatus status,
         int quantity,
@@ -20,6 +21,7 @@ public record ReservationResponse(
         return new ReservationResponse(
                 reservation.getId(),
                 reservation.getUser().getId(),
+                reservation.getRound().getPerformance().getName(),
                 reservation.getRound().getId(),
                 reservation.getStatus(),
                 reservation.getQuantity(),

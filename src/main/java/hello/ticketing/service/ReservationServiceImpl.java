@@ -69,7 +69,7 @@ public class ReservationServiceImpl implements ReservationService {
                         Sort.Order.asc("id"))
         );
 
-        return reservationRepository.findByUser_Id(userId, sorted)
+        return reservationRepository.findByUser_IdWithPerformance(userId, sorted)
                 .map(ReservationResponse::from);
     }
 
