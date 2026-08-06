@@ -13,7 +13,13 @@ import java.util.UUID;
 
 public interface ReservationRepository extends JpaRepository<Reservation, UUID> {
 
-    Page<Reservation> findByUser_Id(Long userId, Pageable pageable);
+    @Query("""
+            select r from Reservation r
+            join fetch r.round rd
+            join fetch rd.performance
+            where r.user.id = :userId
+            """)
+    Page<Reservation> findByUser_IdWithPerformance(Long userId, Pageable pageable);
 
     @Lock(LockModeType.PESSIMISTIC_WRITE)
     @Query("select r from Reservation r where r.id = :id")

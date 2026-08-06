@@ -5,6 +5,7 @@ import hello.ticketing.domain.Reservation;
 import hello.ticketing.domain.Round;
 import hello.ticketing.domain.User;
 import hello.ticketing.dto.response.ReservationResponse;
+import hello.ticketing.mapper.ReservationMapper;
 import hello.ticketing.repository.RemainRepository;
 import hello.ticketing.repository.ReservationRepository;
 import hello.ticketing.repository.RoundRepository;
@@ -34,6 +35,7 @@ public class ReservationServiceImpl implements ReservationService {
     private final UserRepository userRepository;
     private final RoundRepository roundRepository;
     private final RemainRepository remainRepository;
+    private final ReservationMapper reservationMapper;
 
     @Override
     public ReservationResponse create(Long userId, Long roundId, int quantity) {
@@ -57,7 +59,7 @@ public class ReservationServiceImpl implements ReservationService {
 
         Reservation savedReservation = reservationRepository.save(reservation);
 
-        return ReservationResponse.from(savedReservation);
+        return reservationMapper.toDto(savedReservation);
     }
 
     @Override
@@ -69,8 +71,8 @@ public class ReservationServiceImpl implements ReservationService {
                         Sort.Order.asc("id"))
         );
 
-        return reservationRepository.findByUser_Id(userId, sorted)
-                .map(ReservationResponse::from);
+        return reservationRepository.findByUser_IdWithPerformance(userId, sorted)
+                .map(reservationMapper::toDto);
     }
 
     @Override
@@ -85,7 +87,7 @@ public class ReservationServiceImpl implements ReservationService {
 
         remain.increase(reservation.getQuantity());
 
-        return ReservationResponse.from(reservation);
+        return reservationMapper.toDto(reservation);
     }
 
     private @NonNull Round findByRoundId(Long roundId) {
