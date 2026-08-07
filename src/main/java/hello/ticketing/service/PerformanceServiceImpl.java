@@ -3,6 +3,8 @@ package hello.ticketing.service;
 import hello.ticketing.domain.*;
 import hello.ticketing.dto.request.PerformanceCreateRequest;
 import hello.ticketing.dto.response.PerformanceResponse;
+import hello.ticketing.global.exception.performance.InvalidPerformancePeriodException;
+import hello.ticketing.global.exception.performance.PerformanceNotFoundException;
 import hello.ticketing.mapper.PerformanceMapper;
 import hello.ticketing.repository.PerformanceRepository;
 import hello.ticketing.repository.ReservationRepository;
@@ -29,7 +31,7 @@ public class PerformanceServiceImpl implements PerformanceService {
     @Override
     public PerformanceResponse create(PerformanceCreateRequest request) {
         if(request.endAt().isBefore(request.startAt())) {
-            throw new IllegalArgumentException("공연 종료일은 시작일보다 빠를 수 없습니다.");
+            throw new InvalidPerformancePeriodException(request.startAt());
         }
 
         Performance performance = Performance.builder()
@@ -50,10 +52,9 @@ public class PerformanceServiceImpl implements PerformanceService {
     @Override
     public PerformanceResponse findById(Long perfId) {
         Performance performance = performanceRepository.findById(perfId)
-                // 나중에 커스텀 예외로 변경 예정
-                .orElseThrow(() -> new ResponseStatusException(HttpStatus.NOT_FOUND, "존재하지 않는 공연입니다."));
+                .orElseThrow(() -> new PerformanceNotFoundException(perfId));
         if(performance.getPerfStatus()==PerformanceStatus.CLOSED) {
-            throw new IllegalStateException("종료된 공연입니다.");
+            throw new PerformanceNotFoundException(perfId);
         }
 
         return performanceMapper.toDto(performance);
@@ -75,12 +76,11 @@ public class PerformanceServiceImpl implements PerformanceService {
     @Override
     public void delete(Long perfId) {
         Performance performance = performanceRepository.findById(perfId)
-                // 나중에 커스텀 예외로 변경 예정
-                .orElseThrow(() -> new ResponseStatusException(HttpStatus.NOT_FOUND, "존재하지 않는 공연입니다."));
+                .orElseThrow(() -> new PerformanceNotFoundException(perfId));
 
         reservationRepository.cancelAllByPerformanceId(performance.getId(), ReservationStatus.CANCELED, LocalDateTime.now());
         Performance perf = performanceRepository.findById(perfId)
-                .orElseThrow(() -> new ResponseStatusException(HttpStatus.NOT_FOUND, "존재하지 않는 공연입니다."));
+                .orElseThrow(() -> new PerformanceNotFoundException(perfId));
         perf.changeStatus(PerformanceStatus.CLOSED);
     }
 }
