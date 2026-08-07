@@ -7,12 +7,15 @@ import hello.ticketing.mapper.PerformanceMapper;
 import hello.ticketing.repository.PerformanceRepository;
 import hello.ticketing.repository.ReservationRepository;
 import lombok.RequiredArgsConstructor;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
 import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.server.ResponseStatusException;
 
 import java.time.LocalDateTime;
+import java.util.List;
 
 @Service
 @Transactional
@@ -54,6 +57,19 @@ public class PerformanceServiceImpl implements PerformanceService {
         }
 
         return performanceMapper.toDto(performance);
+    }
+
+    @Override
+    public List<PerformanceResponse> findAll(String keyword, Pageable pageable) {
+        Page<Performance> performances;
+        if(keyword==null || keyword.isBlank()) {
+            performances = performanceRepository.findAllByPerfStatus(PerformanceStatus.OPEN, pageable);
+        }
+        else {
+            performances = performanceRepository.findAllByPerfStatusAndNameContainingIgnoreCase(PerformanceStatus.OPEN,keyword, pageable);
+        }
+
+        return performances.getContent().stream().map(performanceMapper::toDto).toList();
     }
 
     @Override
