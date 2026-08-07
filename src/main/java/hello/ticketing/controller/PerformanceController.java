@@ -5,9 +5,13 @@ import hello.ticketing.dto.response.PerformanceResponse;
 import hello.ticketing.service.PerformanceService;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
+import org.springframework.data.domain.Pageable;
+import org.springframework.data.web.PageableDefault;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
+
+import java.util.List;
 
 @RestController
 @RequiredArgsConstructor
@@ -24,6 +28,12 @@ public class PerformanceController {
     @GetMapping("/{perfId}")
     public ResponseEntity<PerformanceResponse> findById(@PathVariable Long perfId) {
         return ResponseEntity.ok(performanceService.findById(perfId));
+    }
+
+    @GetMapping
+    public ResponseEntity<List<PerformanceResponse>> findAll(@RequestParam(required = false) String keyword,
+                                                             @PageableDefault(sort = "id") Pageable pageable) {
+        return ResponseEntity.ok(performanceService.findAll(keyword, pageable));
     }
 
     @DeleteMapping("/{perfId}/delete")
