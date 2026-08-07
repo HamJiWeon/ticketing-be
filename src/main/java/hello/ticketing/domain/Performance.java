@@ -17,13 +17,6 @@ import java.util.List;
 @Entity
 @EntityListeners(AuditingEntityListener.class)
 @NoArgsConstructor(access = AccessLevel.PROTECTED)
-@Table(uniqueConstraints = {
-        @UniqueConstraint(
-                name = "uk_performance_name_place_genre",
-                columnNames = {"name", "place", "genre"}
-        )
-    }
-)
 public class Performance {
 
     @Id
@@ -53,6 +46,10 @@ public class Performance {
     @Column(nullable = false)
     private LimitStatus ticketLimit;
 
+    @Enumerated(EnumType.STRING)
+    @Column(nullable = false)
+    private PerformanceStatus perfStatus;
+
     @OneToMany(mappedBy = "performance")
     private List<Round> round;
 
@@ -63,7 +60,7 @@ public class Performance {
     private LocalDateTime updatedAt;
 
     @Builder
-    public Performance(Long id, String name, String place, int price, LocalDate startAt, LocalDate endAt, GenreStatus genre, LimitStatus ticketLimit, List<Round> round, LocalDateTime createdAt, LocalDateTime updatedAt) {
+    public Performance(Long id, String name, String place, int price, LocalDate startAt, LocalDate endAt, GenreStatus genre, LimitStatus ticketLimit, PerformanceStatus perfStatus, List<Round> round, LocalDateTime createdAt, LocalDateTime updatedAt) {
         this.id = id;
         this.name = name;
         this.place = place;
@@ -72,8 +69,13 @@ public class Performance {
         this.endAt = endAt;
         this.genre = genre;
         this.ticketLimit = ticketLimit;
+        this.perfStatus = perfStatus;
         this.round = round;
         this.createdAt = createdAt;
         this.updatedAt = updatedAt;
+    }
+
+    public void changeStatus(PerformanceStatus perfStatus) {
+        this.perfStatus = perfStatus;
     }
 }
