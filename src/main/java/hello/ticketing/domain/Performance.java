@@ -75,6 +75,16 @@ public class Performance {
         this.updatedAt = updatedAt;
     }
 
+    public void update(String name, String place, Integer price, LocalDate startAt, LocalDate endAt, GenreStatus genre, LimitStatus ticketLimit) {
+        if(name!=null) this.name = name;
+        if(place!=null) this.place = place;
+        if(price!=null) this.price = price;
+        if(startAt!=null) this.startAt = startAt;
+        if(endAt!=null) this.endAt = endAt;
+        if(genre!=null) this.genre = genre;
+        if(ticketLimit!=null) this.ticketLimit = ticketLimit;
+    }
+
     public void changeStatus(PerformanceStatus perfStatus) {
         this.perfStatus = perfStatus;
     }

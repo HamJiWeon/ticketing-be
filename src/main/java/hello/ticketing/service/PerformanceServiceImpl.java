@@ -2,6 +2,7 @@ package hello.ticketing.service;
 
 import hello.ticketing.domain.*;
 import hello.ticketing.dto.request.PerformanceCreateRequest;
+import hello.ticketing.dto.request.PerformanceUpdateRequest;
 import hello.ticketing.dto.response.PerformanceResponse;
 import hello.ticketing.global.exception.performance.InvalidPerformancePeriodException;
 import hello.ticketing.global.exception.performance.PerformanceNotFoundException;
@@ -70,6 +71,19 @@ public class PerformanceServiceImpl implements PerformanceService {
         }
 
         return performances.getContent().stream().map(performanceMapper::toDto).toList();
+    }
+
+    @Override
+    @Transactional
+    public PerformanceResponse update(Long perfId, PerformanceUpdateRequest request) {
+        Performance performance = performanceRepository.findById(perfId)
+                .orElseThrow(() -> new PerformanceNotFoundException(perfId));
+
+        performance.update(request.name(), request.place(), request.price(), request.startAt(), request.endAt(), request.genre(), request.ticketLimit());
+        if(performance.getEndAt().isBefore(performance.getStartAt())) {
+            throw new InvalidPerformancePeriodException(performance.getStartAt());
+        }
+        return performanceMapper.toDto(performance);
     }
 
     @Override
