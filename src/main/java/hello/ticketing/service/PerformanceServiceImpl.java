@@ -18,7 +18,7 @@ import java.time.LocalDateTime;
 import java.util.List;
 
 @Service
-@Transactional
+@Transactional(readOnly = true)
 @RequiredArgsConstructor
 public class PerformanceServiceImpl implements PerformanceService {
 
@@ -27,6 +27,7 @@ public class PerformanceServiceImpl implements PerformanceService {
     private final PerformanceMapper performanceMapper;
 
     @Override
+    @Transactional
     public PerformanceResponse create(PerformanceCreateRequest request) {
         if(request.endAt().isBefore(request.startAt())) {
             throw new InvalidPerformancePeriodException(request.startAt());
@@ -72,6 +73,7 @@ public class PerformanceServiceImpl implements PerformanceService {
     }
 
     @Override
+    @Transactional
     public void delete(Long perfId) {
         Performance performance = performanceRepository.findById(perfId)
                 .orElseThrow(() -> new PerformanceNotFoundException(perfId));
