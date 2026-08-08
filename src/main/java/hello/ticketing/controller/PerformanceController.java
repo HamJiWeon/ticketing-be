@@ -1,6 +1,7 @@
 package hello.ticketing.controller;
 
 import hello.ticketing.dto.request.PerformanceCreateRequest;
+import hello.ticketing.dto.request.PerformanceUpdateRequest;
 import hello.ticketing.dto.response.PerformanceResponse;
 import hello.ticketing.service.PerformanceService;
 import jakarta.validation.Valid;
@@ -34,6 +35,12 @@ public class PerformanceController {
     public ResponseEntity<List<PerformanceResponse>> findAll(@RequestParam(required = false) String keyword,
                                                              @PageableDefault(sort = "id") Pageable pageable) {
         return ResponseEntity.ok(performanceService.findAll(keyword, pageable));
+    }
+
+    @PatchMapping("/{perfId}")
+    public ResponseEntity<PerformanceResponse> update(@PathVariable Long perfId,
+                                                      @Valid @RequestBody PerformanceUpdateRequest request) {
+        return ResponseEntity.ok(performanceService.update(perfId, request));
     }
 
     @DeleteMapping("/{perfId}/delete")
